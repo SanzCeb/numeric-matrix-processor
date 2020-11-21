@@ -1,26 +1,26 @@
 package processor;
 
-public class Matrix {
+public class NumericMatrix {
     private int [][] matrix;
     private final int rows;
     private final int columns;
 
-    public Matrix(int[][] matrix, int rows, int columns) {
+    public NumericMatrix(int[][] matrix, int rows, int columns) {
         this.matrix = matrix;
         this.rows = rows;
         this.columns = columns;
     }
 
 
-    public Matrix add(Matrix matrixBObj) throws Exception {
-        if (rows == matrixBObj.rows && columns == matrixBObj.columns) {
+    public NumericMatrix add(NumericMatrix numericMatrixBObj) throws Exception {
+        if (rows == numericMatrixBObj.rows && columns == numericMatrixBObj.columns) {
             var result = new int[rows][columns];
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < columns; j++) {
-                    result[i][j] = matrix[i][j] + matrixBObj.matrix[i][j];
+                    result[i][j] = matrix[i][j] + numericMatrixBObj.matrix[i][j];
                 }
             }
-            return new Matrix(result, rows, columns);
+            return new NumericMatrix(result, rows, columns);
         } else {
             throw new Exception("ERROR");
         }
