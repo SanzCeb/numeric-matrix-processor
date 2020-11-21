@@ -10,11 +10,11 @@ public class NumericMatrixProcessor {
         try {
 
             NumericMatrix matrixA = NumericMatrixReader.readNumericMatrix(scanner);
-            NumericMatrix matrixB = NumericMatrixReader.readNumericMatrix(scanner);
-            System.out.print(matrixA.add(matrixB));
+            var scalar = scanner.nextInt();
+            System.out.print(matrixA.mulByScalar(scalar));
 
         }catch (Exception exception) {
-            System.out.println(exception.getMessage());
+            System.out.println("ERROR");
         }
 
     }

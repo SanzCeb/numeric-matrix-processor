@@ -1,7 +1,7 @@
 package processor;
 
 public class NumericMatrix {
-    private int [][] matrix;
+    private final int [][] matrix;
     private final int rows;
     private final int columns;
 
@@ -39,5 +39,15 @@ public class NumericMatrix {
         }
         matrixStr.deleteCharAt(matrixStr.length() - 1);
         return matrixStr.toString();
+    }
+
+    public NumericMatrix mulByScalar(int scalar) {
+        var result = new int[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                result[i][j] = matrix[i][j] * scalar;
+            }
+        }
+        return new NumericMatrix(result, rows, columns);
     }
 }
