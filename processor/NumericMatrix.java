@@ -1,14 +1,13 @@
 package processor;
 
-import java.util.function.IntBinaryOperator;
-import java.util.function.ToIntBiFunction;
+import java.util.function.*;
 
 public class NumericMatrix {
-    private final int [][] matrix;
+    private final double [][] matrix;
     private final int rows;
     private final int columns;
 
-    public NumericMatrix(int[][] matrix, int rows, int columns) {
+    public NumericMatrix(double[][] matrix, int rows, int columns) {
         this.matrix = matrix;
         this.rows = rows;
         this.columns = columns;
@@ -17,14 +16,27 @@ public class NumericMatrix {
 
     public NumericMatrix add(NumericMatrix matrixB) throws Exception {
         if (rows == matrixB.rows && columns == matrixB.columns) {
-            return matrixOperation(Integer::sum, (i, j) -> matrixB.matrix[i][j]);
+            return matrixOperation(Double::sum, (i, j) -> matrixB.matrix[i][j]);
         } else {
             throw new Exception("ERROR");
         }
     }
 
-    public NumericMatrix mulByScalar(int scalar) {
-        return matrixOperation(Math::multiplyExact, (a, b) -> scalar);
+    public NumericMatrix mulByScalar(double scalar) {
+        return matrixOperation((a, b) -> a * b, (a, b) -> scalar);
+    }
+
+    public NumericMatrix multiply(NumericMatrix matrixB) throws Exception {
+        if (columns == matrixB.rows) {
+            var result = new double[rows][matrixB.columns];
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < matrixB.columns; j++) {
+                    result[i][j] = dotProduct(matrix[i], matrixB, j);
+                }
+            }
+            return new NumericMatrix(result, rows, matrixB.columns);
+        }
+        throw new Exception("The operation cannot be performed.");
     }
 
     @Override
@@ -34,7 +46,7 @@ public class NumericMatrix {
         for (int i = 0; i < rows; i++) {
             matrixStr.append(this.matrix[i][0]);
             for (int j = 1; j < columns; j++) {
-                matrixStr.append(String.format(" %d", matrix[i][j]));
+                matrixStr.append(String.format(" %.2f", matrix[i][j]));
             }
             matrixStr.append('\n');
         }
@@ -42,13 +54,22 @@ public class NumericMatrix {
         return matrixStr.toString();
     }
 
-    private NumericMatrix matrixOperation (IntBinaryOperator operator, ToIntBiFunction<Integer, Integer> valueReader) {
-        var result = new int[rows][columns];
+    private NumericMatrix matrixOperation (DoubleBinaryOperator operator,
+                                           ToDoubleBiFunction<Integer, Integer> valueReader) {
+        var result = new double[rows][columns];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                result[i][j] = operator.applyAsInt(matrix[i][j], valueReader.applyAsInt(i, j));
+                result[i][j] = operator.applyAsDouble(matrix[i][j], valueReader.applyAsDouble(i, j));
             }
         }
         return new NumericMatrix(result, rows, columns);
+    }
+
+    private double dotProduct(double[] matrix, NumericMatrix matrixB, int j) {
+        double result = 0;
+        for (int i = 0; i < columns; i++) {
+            result += matrix[i] * matrixB.matrix[i][j];
+        }
+        return result;
     }
 }
