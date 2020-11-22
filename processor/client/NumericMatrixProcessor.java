@@ -4,18 +4,18 @@ import processor.NumericMatrix;
 import processor.NumericMatrixReader;
 
 import java.util.Scanner;
+import java.util.function.Function;
+
 
 public class NumericMatrixProcessor {
     private static final Scanner SCANNER = new Scanner(System.in);
 
     public static void run() {
-
         try {
             runNumericMatrixProcessorMenu();
         }catch (Exception ignored) {
             System.out.println("ERROR");
         }
-
     }
 
     static void runNumericMatrixProcessorMenu() {
@@ -28,13 +28,13 @@ public class NumericMatrixProcessor {
                 case 0:
                     break;
                 case 1:
-                    runAddMatrices();
+                    runBiMatrixOperator("add");
                     break;
                 case 2:
                     runMulMatricesByAConst();
                     break;
                 case 3:
-                    runMulMatrices();
+                    runBiMatrixOperator("multiply");
                     break;
                 case 4:
                     runTranspose();
@@ -43,7 +43,6 @@ public class NumericMatrixProcessor {
                     choice = -1;
                     break;
             }
-
         } while(choice != 0);
     }
 
@@ -57,16 +56,16 @@ public class NumericMatrixProcessor {
                 case 0:
                     break;
                 case 1:
-                    transposeMainDiagonal();
+                    transposeMatrix(NumericMatrix::transposeMainDiagonal);
                     break;
                 case 2:
-                    transposeSideDiagonal();
+                    transposeMatrix(NumericMatrix::transposeSideDiagonal);
                     break;
                 case 3:
-                    transposeVerticalLine();
+                    transposeMatrix(NumericMatrix::transposeVerticalLine);
                     break;
                 case 4:
-                    transposeHorizontalLine();
+                    transposeMatrix(NumericMatrix::transposeHorizontalLine);
                     break;
                 default:
                     choice = -1;
@@ -76,51 +75,42 @@ public class NumericMatrixProcessor {
         } while(choice == -1);
     }
 
-    private static void transposeHorizontalLine() {
+    private static void transposeMatrix(Function<NumericMatrix, NumericMatrix> transposeOperator) {
         try {
             NumericMatrix matrixA = NumericMatrixReader.readNumericMatrix(SCANNER, "");
             System.out.println("The result is:");
-            System.out.print(matrixA.transposeHorizontalLine());
+            System.out.print(transposeOperator.apply(matrixA));
 
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
     }
 
-    private static void transposeVerticalLine() {
+    private static void runBiMatrixOperator(String matrixOperator) {
         try {
 
-            NumericMatrix matrixA = NumericMatrixReader.readNumericMatrix(SCANNER, "");
+            NumericMatrix matrixA = NumericMatrixReader.readNumericMatrix(SCANNER, " first");
+            NumericMatrix matrixB = NumericMatrixReader.readNumericMatrix(SCANNER, " second");
             System.out.println("The result is:");
-            System.out.print(matrixA.transposeVerticalLine());
+            var numericMatrixClass = NumericMatrix.class;
+            var matrixOperatorMethod = numericMatrixClass.getMethod(matrixOperator, numericMatrixClass);
+            System.out.println(matrixOperatorMethod.invoke(matrixA, matrixB));
 
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
     }
 
-    private static void transposeSideDiagonal() {
+    private static void runMulMatricesByAConst() {
         try {
-
             NumericMatrix matrixA = NumericMatrixReader.readNumericMatrix(SCANNER, "");
+            var scalar = SCANNER.nextInt();
             System.out.println("The result is:");
-            System.out.print(matrixA.transposeSideDiagonal());
-
+            System.out.print(matrixA.mulByScalar(scalar));
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
-    }
 
-    private static void transposeMainDiagonal() {
-        try {
-
-            NumericMatrix matrixA = NumericMatrixReader.readNumericMatrix(SCANNER, "");
-            System.out.println("The result is:");
-            System.out.print(matrixA.transposeMainDiagonal());
-
-        } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-        }
     }
 
     private static void printTransposeMenu() {
@@ -128,46 +118,6 @@ public class NumericMatrixProcessor {
         System.out.println("2. Side diagonal");
         System.out.println("3. Vertical line");
         System.out.println("4. Horizontal line");
-    }
-
-    private static void runMulMatrices() {
-        try {
-
-            NumericMatrix matrixA = NumericMatrixReader.readNumericMatrix(SCANNER, " first");
-            NumericMatrix matrixB = NumericMatrixReader.readNumericMatrix(SCANNER, " second");
-            System.out.println("The result is:");
-            System.out.print(matrixA.multiply(matrixB));
-
-        } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-        }
-    }
-
-    private static void runAddMatrices() {
-        try {
-            NumericMatrix matrixA = NumericMatrixReader.readNumericMatrix(SCANNER, " first");
-            NumericMatrix matrixB = NumericMatrixReader.readNumericMatrix(SCANNER, " second");
-            System.out.println("The result is:");
-            System.out.print(matrixA.add(matrixB));
-
-        } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-        }
-
-    }
-
-    private static void runMulMatricesByAConst() {
-        try {
-
-            NumericMatrix matrixA = NumericMatrixReader.readNumericMatrix(SCANNER, "");
-            var scalar = SCANNER.nextInt();
-            System.out.println("The result is:");
-            System.out.print(matrixA.mulByScalar(scalar));
-
-        } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-        }
-
     }
 
     private static void printMenu() {
