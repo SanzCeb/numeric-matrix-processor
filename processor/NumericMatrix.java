@@ -72,4 +72,43 @@ public class NumericMatrix {
         }
         return result;
     }
+
+    public NumericMatrix transposeVerticalLine() {
+        var result = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                result[j][i] = matrix[j][columns - i - 1];
+            }
+        }
+        return new NumericMatrix(result, rows, columns);
+    }
+
+    public NumericMatrix transposeSideDiagonal() {
+        var result = new double[rows][columns];
+        for (int i = 0; i < columns; i++) {
+            for (int j = 0; j < rows; j++) {
+                result[j][i] = matrix[rows - j - 1][columns - i - 1];
+            }
+        }
+        return new NumericMatrix(result, rows, columns).transposeMainDiagonal();
+    }
+
+    public NumericMatrix transposeHorizontalLine() {
+        var result = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            if (columns >= 0)
+                System.arraycopy(matrix[rows - i - 1], 0, result[i], 0, columns);
+        }
+        return new NumericMatrix(result, rows, columns);
+    }
+
+    public NumericMatrix transposeMainDiagonal() {
+        var result = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                result[i][j] = matrix[j][i];
+            }
+        }
+        return new NumericMatrix(result, rows, columns);
+    }
 }
