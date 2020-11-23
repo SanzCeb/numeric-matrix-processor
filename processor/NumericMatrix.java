@@ -112,26 +112,46 @@ public class NumericMatrix {
         return new NumericMatrix(result, rows, columns);
     }
 
-    public double getDeterminant() {
+    public double getDeterminant() throws Exception {
         if (rows == columns) {
             if (rows == 2) {
                 return matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
             }
             double determinant = 0;
             for (int i = 0; i < columns; i++) {
-                var subMatrix = getSubMatrix(i);
-                determinant +=  matrix[0][i] * cofactor(i) * subMatrix.getDeterminant();
+                var subMatrix = getMinor(0, i);
+                determinant +=  matrix[0][i] * cofactor(0, i);
             }
             return determinant;
         }
-        return 0;
+        throw new Exception("The determinant is only defined for square matrices!");
     }
 
-    private double cofactor(int i) {
-        return Math.pow(-1, 2 + i);
+    public NumericMatrix inverse() throws Exception {
+        var det = getDeterminant();
+
+        if (det == 0) {
+            throw new Exception("The matrix does not have an inverse.");
+        }
+
+        return getCofactorMatrix().transposeMainDiagonal().mulByScalar(1 / det);
     }
 
-    private NumericMatrix getSubMatrix(int n) {
+    private NumericMatrix getCofactorMatrix() throws  Exception {
+        var cofactorMatrix = new double[rows][columns];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                cofactorMatrix[i][j] = cofactor(i, j);
+            }
+        }
+        return new NumericMatrix(cofactorMatrix, rows, columns);
+    }
+
+    private double cofactor(int i, int j) throws Exception {
+        return Math.pow(-1, i + j) * getMinor(i, j).getDeterminant();
+    }
+
+    private NumericMatrix getMinor(int row, int n) {
         var _columns = columns - 1;
         var _rows = rows - 1;
         var subMatrix = new double[_rows][_columns];
@@ -139,7 +159,7 @@ public class NumericMatrix {
         int k = 0, f = 0;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                if (i != 0 && j != n) {
+                if (i != row && j != n) {
                     subMatrix[k][f] = matrix[i][j];
                     f++;
                     if (f == _columns) {

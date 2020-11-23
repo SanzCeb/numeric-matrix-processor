@@ -41,6 +41,9 @@ public class NumericMatrixProcessor {
                 case 5:
                     runUnaryMatrixOperator("getDeterminant");
                     break;
+                case 6:
+                    runUnaryMatrixOperator("inverse");
+                    break;
                 default:
                     choice = -1;
                     break;
@@ -130,6 +133,7 @@ public class NumericMatrixProcessor {
         System.out.println("3. Multiply matrices");
         System.out.println("4. Transpose matrices");
         System.out.println("5. Calculate a determinant");
+        System.out.println("6. Inverse matrix");
         System.out.println("0. Exit");
     }
 }
