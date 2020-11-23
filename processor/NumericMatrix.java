@@ -111,4 +111,46 @@ public class NumericMatrix {
         }
         return new NumericMatrix(result, rows, columns);
     }
+
+    public double getDeterminant() {
+        if (rows == columns) {
+            if (rows == 2) {
+                return matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
+            }
+            double determinant = 0;
+            for (int i = 0; i < columns; i++) {
+                var subMatrix = getSubMatrix(i);
+                determinant +=  matrix[0][i] * cofactor(i) * subMatrix.getDeterminant();
+            }
+            return determinant;
+        }
+        return 0;
+    }
+
+    private double cofactor(int i) {
+        return Math.pow(-1, 2 + i);
+    }
+
+    private NumericMatrix getSubMatrix(int n) {
+        var _columns = columns - 1;
+        var _rows = rows - 1;
+        var subMatrix = new double[_rows][_columns];
+
+        int k = 0, f = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                if (i != 0 && j != n) {
+                    subMatrix[k][f] = matrix[i][j];
+                    f++;
+                    if (f == _columns) {
+                        k++;
+                        f = 0;
+                    }
+                }
+            }
+        }
+
+        return new NumericMatrix(subMatrix, _rows, _columns);
+    }
+
 }

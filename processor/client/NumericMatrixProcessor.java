@@ -39,11 +39,24 @@ public class NumericMatrixProcessor {
                 case 4:
                     runTranspose();
                     break;
+                case 5:
+                    runCalculateADeterminant();
+                    break;
                 default:
                     choice = -1;
                     break;
             }
         } while(choice != 0);
+    }
+
+    private static void runCalculateADeterminant() {
+        try {
+            NumericMatrix matrixA = NumericMatrixReader.readNumericMatrix(SCANNER, "");
+            System.out.println("The result is:");
+            System.out.println(matrixA.getDeterminant());
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+        }
     }
 
     private static void runTranspose() {
@@ -125,6 +138,7 @@ public class NumericMatrixProcessor {
         System.out.println("2. Multiply matrix by a constant");
         System.out.println("3. Multiply matrices");
         System.out.println("4. Transpose matrices");
+        System.out.println("5. Calculate a determinant");
         System.out.println("0. Exit");
     }
 }
