@@ -4,7 +4,6 @@ import processor.NumericMatrix;
 import processor.NumericMatrixReader;
 
 import java.util.Scanner;
-import java.util.function.Function;
 
 
 public class NumericMatrixProcessor {
@@ -39,6 +38,9 @@ public class NumericMatrixProcessor {
                 case 4:
                     runTranspose();
                     break;
+                case 5:
+                    runUnaryMatrixOperator("getDeterminant");
+                    break;
                 default:
                     choice = -1;
                     break;
@@ -56,16 +58,16 @@ public class NumericMatrixProcessor {
                 case 0:
                     break;
                 case 1:
-                    transposeMatrix(NumericMatrix::transposeMainDiagonal);
+                    runUnaryMatrixOperator("transposeMainDiagonal");
                     break;
                 case 2:
-                    transposeMatrix(NumericMatrix::transposeSideDiagonal);
+                    runUnaryMatrixOperator("transposeSideDiagonal");
                     break;
                 case 3:
-                    transposeMatrix(NumericMatrix::transposeVerticalLine);
+                    runUnaryMatrixOperator("transposeVerticalLine");
                     break;
                 case 4:
-                    transposeMatrix(NumericMatrix::transposeHorizontalLine);
+                    runUnaryMatrixOperator("transposeHorizontalLine");
                     break;
                 default:
                     choice = -1;
@@ -75,11 +77,13 @@ public class NumericMatrixProcessor {
         } while(choice == -1);
     }
 
-    private static void transposeMatrix(Function<NumericMatrix, NumericMatrix> transposeOperator) {
+    private static void runUnaryMatrixOperator(String matrixOperator) {
         try {
             NumericMatrix matrixA = NumericMatrixReader.readNumericMatrix(SCANNER, "");
             System.out.println("The result is:");
-            System.out.print(transposeOperator.apply(matrixA));
+            var numericMatrixClass = NumericMatrix.class;
+            var matrixOperatorMethod = numericMatrixClass.getMethod(matrixOperator);
+            System.out.println(matrixOperatorMethod.invoke(matrixA));
 
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
@@ -104,7 +108,7 @@ public class NumericMatrixProcessor {
     private static void runMulMatricesByAConst() {
         try {
             NumericMatrix matrixA = NumericMatrixReader.readNumericMatrix(SCANNER, "");
-            var scalar = SCANNER.nextInt();
+            var scalar = SCANNER.nextDouble();
             System.out.println("The result is:");
             System.out.print(matrixA.mulByScalar(scalar));
         } catch (Exception exception) {
@@ -125,6 +129,7 @@ public class NumericMatrixProcessor {
         System.out.println("2. Multiply matrix by a constant");
         System.out.println("3. Multiply matrices");
         System.out.println("4. Transpose matrices");
+        System.out.println("5. Calculate a determinant");
         System.out.println("0. Exit");
     }
 }
